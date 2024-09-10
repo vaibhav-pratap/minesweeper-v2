@@ -5,12 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let mineLocations = [];
     let flagCount = 0;
     let revealedCount = 0;
-    let gameOver = false; // Track whether the game is over
+    let gameOver = false;
+    let score = 0;  // Track the player's score
 
     const gameBoardElement = document.getElementById('gameBoard');
     const restartButton = document.getElementById('restart');
     const flagsElement = document.getElementById('flags');
-    const messageElement = document.getElementById('message');
+    const scoreElement = document.getElementById('scoreboard');
+    const statusElement = document.getElementById('gameStatus');  // Game Over status
 
     // Start the game on load
     restartButton.addEventListener('click', startGame);
@@ -20,9 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
         mineLocations = [];
         flagCount = 0;
         revealedCount = 0;
-        gameOver = false;  // Reset the game state
-        messageElement.textContent = '';
-        flagsElement.textContent = `Flags: 0`;
+        gameOver = false;
+        score = 0;  // Reset score
+        statusElement.textContent = '';  // Clear Game Over status
+        flagsElement.textContent = `0`;
+        scoreElement.textContent = `0`;  // Reset scoreboard
 
         // Set the grid layout to be a perfect square
         gameBoardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
@@ -115,11 +119,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Game over if mine is revealed: Show bomb icon and reveal all
             cellElement.innerHTML = '<i class="fas fa-bomb"></i>'; // Display the bomb icon
             cellElement.classList.add('mine');
-            messageElement.textContent = 'Game Over! You hit a mine!';
+            statusElement.textContent = 'Game Over!'; // Update Game Over status
             gameOver = true;  // Set the game over state
             revealAll();      // Reveal all mines and numbers
             return;
         }
+
+        // Update score for revealed cells (non-mine)
+        score++;
+        scoreElement.textContent = `${score}`;  // Update the scoreboard with the new score
+        scoreElement.classList.add('pop');      // Add animation class
+        setTimeout(() => scoreElement.classList.remove('pop'), 300);  // Remove the animation class after animation
 
         if (cellData.neighbors > 0) {
             cellElement.textContent = cellData.neighbors; // Show number of neighboring mines
@@ -127,9 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
             revealNeighbors(row, col); // If no neighbors, reveal surrounding cells
         }
 
+        // Check for win condition: If all non-mine cells are revealed
         if (revealedCount === boardSize * boardSize - mineCount) {
-            messageElement.textContent = 'You win!';
+            statusElement.textContent = 'You win!'; // Update win status
             gameOver = true;  // Set the game over state
+            revealAll();      // Reveal all cells
         }
     }
 
@@ -153,61 +165,50 @@ document.addEventListener('DOMContentLoaded', () => {
         const cellData = gameBoard[row][col];
         const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
 
-                // Don't flag revealed cells
-                if (cellData.revealed) return;
+        if (cellData.revealed) return; // Don't flag revealed cells
 
-                if (cellData.flag) {
-                    // Unflag the cell: Remove flag icon
-                    cellData.flag = false;
-                    flagCount--;
-                    cellElement.innerHTML = ''; // Remove the flag icon
-                    cellElement.classList.remove('flag');
-                } else if (flagCount < mineCount) {
-                    // Flag the cell: Add FontAwesome flag icon
-                    cellData.flag = true;
-                    flagCount++;
-                    cellElement.innerHTML = '<i class="fas fa-flag"></i>'; // Add the flag icon
-                    cellElement.classList.add('flag');
-                }
-        
-                flagsElement.textContent = `Flags: ${flagCount}`;
-            }
-        
-            // Reveal all cells (both numbers and mines) when the game is over
-            function revealAll() {
-                for (let row = 0; row < boardSize; row++) {
-                    for (let col = 0; col < boardSize; col++) {
-                        const cellData = gameBoard[row][col];
-                        const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
-        
-                        if (!cellData.revealed) {
-                            if (cellData.mine) {
-                                // Reveal all mines
-                                cellElement.innerHTML = '<i class="fas fa-bomb"></i>';
-                                cellElement.classList.add('mine');
-                            } else if (cellData.neighbors > 0) {
-                                // Reveal all numbers
-                                cellElement.textContent = cellData.neighbors;
-                                cellElement.classList.add('revealed');
-                            } else {
-                                // Reveal empty cells
-                                cellElement.classList.add('revealed');
-                            }
-                        }
+        if (cellData.flag) {
+            // Unflag the cell: Remove flag icon
+            cellData.flag = false;
+            flagCount--;
+            cellElement.innerHTML = ''; // Remove the flag icon
+            cellElement.classList.remove('flag');
+        } else if (flagCount < mineCount) {
+            // Flag the cell: Add FontAwesome flag icon
+            cellData.flag = true;
+            flagCount++;
+            cellElement.innerHTML = '<i class="fas fa-flag"></i>'; // Add the flag icon
+            cellElement.classList.add('flag');
+        }
+
+        flagsElement.textContent = `${flagCount}`;
+    }
+
+    // Reveal all cells (both numbers and mines) when the game is over
+    function revealAll() {
+        for (let row = 0; row < boardSize; row++) {
+            for (let col = 0; col < boardSize; col++) {
+                const cellData = gameBoard[row][col];
+                const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+
+                if (!cellData.revealed) {
+                    if (cellData.mine) {
+                        // Reveal all mines
+                        cellElement.innerHTML = '<i class="fas fa-bomb"></i>';
+                        cellElement.classList.add('mine');
+                    } else if (cellData.neighbors > 0) {
+                        // Reveal all numbers
+                        cellElement.textContent = cellData.neighbors;
+                        cellElement.classList.add('revealed');
+                    } else {
+                        // Reveal empty cells
+                        cellElement.classList.add('revealed');
                     }
                 }
             }
-        
-            // Reveal all mines when the game is over
-            function revealMines() {
-                mineLocations.forEach(({ row, col }) => {
-                    const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
-                    cellElement.innerHTML = '<i class="fas fa-bomb"></i>'; // Display the bomb icon
-                    cellElement.classList.add('mine');
-                });
-            }
-        
-            // Start the game for the first time
-            startGame();
-        });
-        
+        }
+    }
+
+    // Start the game for the first time
+    startGame();
+});

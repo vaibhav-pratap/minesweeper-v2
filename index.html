@@ -9,18 +9,12 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-dark text-white">
-    <div class="container text-center mt-5">
-        <h1 class="display-4">Minesweeper</h1>
-        <p id="instructions" class="lead">
-            - Left-click to reveal a cell.<br>
-            - Right-click to place/remove a flag.<br>
-            Avoid the mines! Good luck!
-        </p>
-
-        <div class="d-flex justify-content-center mb-4">
-            <button id="restart" class="btn btn-outline-light mx-2">Restart</button>
-            <span id="flags" class="mx-2">Flags: 0</span>
-            <span id="message" class="mx-2 text-danger"></span>
+    <div class="container text-center">
+        <div id="topBar">
+            <div class="flags">Flags: <span id="flags">0</span></div>
+            <div class="score">Score: <span id="scoreboard">0</span></div>
+            <div class="status" id="gameStatus"></div> <!-- Status will display Game Over -->
+            <button id="restart" class="btn-restart">Restart</button>
         </div>
 
         <div id="gameBoard" class="gameboard"></div>

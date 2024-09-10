@@ -2,6 +2,12 @@ body {
     background-color: #121212;
     color: white;
     text-align: center;
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling */
+    height: 100vh; /* Ensure it fits in the viewport */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .container {
@@ -9,18 +15,42 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    width: 100vw;
     height: 100vh;
-    max-width: 100vw;
+}
+
+#topBar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background-color: #1a1a1a;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+#topBar .score, #topBar .flags {
+    font-size: 24px;
+    color: #ffeb3b;
+    animation: pop 0.3s ease-in-out; /* Animation for pop effect */
+}
+
+#topBar .status {
+    font-size: 24px;
+    color: #ff4444; /* Red color for Game Over */
 }
 
 #gameBoard {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);   /* Create an 8x8 grid */
-    grid-template-rows: repeat(8, 1fr);      /* Ensure equal number of rows */
-    gap: 8px;                                /* Space between the cells */
-    width: 320px;                            /* Larger width */
-    height: 320px;                           /* Larger height for 1:1 square */
-    margin: 20px auto;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 8px;
+    width: 320px;
+    height: 320px;
+    margin-top: 80px; /* Space for the top bar */
 }
 
 .cell {
@@ -31,7 +61,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 16px;                         /* Make the text size larger */
+    font-size: 16px;
     color: white;
     transition: background-color 0.3s ease;
 }
@@ -44,15 +74,17 @@ body {
     background-color: #666;
     color: #ffffff;
     cursor: default;
+    animation: reveal-animation 0.3s ease-in;
 }
 
 .cell.mine i {
-    font-size: 24px;                         /* Larger bomb icon */
+    font-size: 24px;
     color: red;
+    animation: mine-animation 0.4s ease-in-out;
 }
 
 .cell.flag i {
-    font-size: 18px;                         /* Adjust the flag size */
+    font-size: 18px;
     color: #ffeb3b;
 }
 
@@ -60,12 +92,55 @@ body {
     display: none;
 }
 
-.btn-outline-light {
-    border-color: #ffeb3b;
-    color: #ffeb3b;
+/* Gradient and animation for Restart button */
+.btn-restart {
+    background: linear-gradient(90deg, #ff6f61, #ffeb3b);
+    border: none;
+    color: #121212;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border-radius: 4px;
 }
 
-.btn-outline-light:hover {
-    background-color: #ffeb3b;
-    color: #121212;
+.btn-restart:hover {
+    background: linear-gradient(90deg, #ffeb3b, #ff6f61);
+    transform: scale(1.1);
+}
+
+/* Pop animation for score */
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Animations for revealing */
+@keyframes reveal-animation {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes mine-animation {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
