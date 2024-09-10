@@ -3,8 +3,7 @@ body {
     color: white;
     text-align: center;
     margin: 0;
-    overflow: hidden; /* Prevent scrolling */
-    height: 100vh; /* Ensure it fits in the viewport */
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -26,34 +25,58 @@ body {
     background-color: #1a1a1a;
     padding: 10px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
     z-index: 1000;
 }
 
-#topBar .score, #topBar .flags {
-    font-size: 24px;
+#topBar .icon-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 18px;
+}
+
+#topBar .icon-container i {
+    margin-right: 5px;
+    font-size: 20px;
+}
+
+#topBar .left-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#topBar .score {
+    color: #81c784;
+}
+
+#topBar .flags {
     color: #ffeb3b;
-    animation: pop 0.3s ease-in-out; /* Animation for pop effect */
 }
 
 #topBar .status {
-    font-size: 24px;
-    color: #ff4444; /* Red color for Game Over */
+    font-size: 18px;
+    color: #ff4444;
+    text-align: center;
+    flex-grow: 1; /* Ensure status stays centered */
 }
 
 #gameBoard {
     display: grid;
-    gap: 8px;
-    margin-top: 80px; /* Space for the top bar */
+    gap: 5px;
     justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* Cell size for Beginner, Noob, and Expert levels */
+/* Cell sizes for different difficulties */
 .cell {
-    width: 40px; /* Default cell size */
-    height: 40px;
     background-color: #333;
     border: 2px solid #555;
     display: flex;
@@ -64,10 +87,19 @@ body {
     transition: background-color 0.3s ease;
 }
 
-/* Cell size for Pro (12x12) and Legend (16x16) */
 .cell.small {
-    width: 30px;  /* Smaller cell size for higher difficulty levels */
-    height: 30px;
+    width: 25px;
+    height: 25px;
+}
+
+.cell.medium {
+    width: 40px;
+    height: 40px;
+}
+
+.cell.large {
+    width: 50px;
+    height: 50px;
 }
 
 .cell:hover {
@@ -82,7 +114,7 @@ body {
 }
 
 .cell.mine i {
-    font-size: 20px; /* Adjust bomb icon size for smaller cells */
+    font-size: 20px;
     color: red;
     animation: mine-animation 0.4s ease-in-out;
 }
@@ -96,20 +128,68 @@ body {
     display: none;
 }
 
-#difficultyButton {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #ffeb3b;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #gameBoard {
+        margin-top: 60px;
+        gap: 3px;
+    }
+
+    .cell.small {
+        width: 20px;
+        height: 20px;
+    }
+
+    .cell.medium {
+        width: 30px;
+        height: 30px;
+    }
+
+    .cell.large {
+        width: 40px;
+        height: 40px;
+    }
+
+    #topBar .icon-container {
+        font-size: 14px;
+    }
+}
+
+/* Button styles */
+#topBar button {
+    padding: 10px 15px;
+    font-size: 16px;
     border: none;
-    font-size: 18px;
-    color: #121212;
-    cursor: pointer;
     border-radius: 4px;
-    transition: transform 0.3s ease;
+    cursor: pointer;
+    margin-right: 5px;
+    backdrop-filter: blur(8px);
+    color: #fff;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Restart button styling */
+#restart {
+    background-color: rgba(255, 0, 0, 0.8);
+    color: #fff;
+    font-weight: bold;
+}
+
+#restart:hover {
+    background-color: rgba(255, 0, 0, 0.9);
+    transform: scale(1.2);
+}
+
+/* Difficulty button styling */
+#difficultyButton {
+    background-color: rgba(0, 150, 136, 0.8);
+    color: #fff;
+    font-weight: bold;
 }
 
 #difficultyButton:hover {
-    transform: scale(1.1);
+    background-color: rgba(0, 150, 136, 0.9);
+    transform: scale(1.2);
 }
 
 /* Difficulty selection pop-up */
@@ -120,7 +200,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     z-index: 2000;
     display: flex;
@@ -129,31 +209,34 @@ body {
 }
 
 #difficultyPopup .popup-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
+    background-color: transparent;
+    padding: 30px;
     text-align: center;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
+    color: #ffeb3b;
 }
 
 .popup-content h2 {
     margin-bottom: 20px;
-    color: #121212;
+    color: white;
 }
 
 .popup-content button {
     margin: 10px;
-    padding: 10px 20px;
-    background-color: #ffeb3b;
+    padding: 15px 25px;
+    background-color: #ff6f61;
     border: none;
-    font-size: 16px;
+    font-size: 18px;
     cursor: pointer;
     border-radius: 4px;
+    color: white;
+    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .popup-content button:hover {
-    background-color: #ff6f61;
-    color: white;
+    background-color: #ffeb3b;
+    color: #121212;
+    transform: scale(1.2);
 }
 
 /* Animations for revealing */
@@ -177,4 +260,21 @@ body {
         transform: scale(1);
         opacity: 1;
     }
+}
+
+/* Pop animation for score */
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pop {
+    animation: pop 0.3s ease-in-out;
 }

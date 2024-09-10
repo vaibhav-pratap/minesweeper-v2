@@ -11,16 +11,22 @@
 <body class="bg-dark text-white">
     <div class="container text-center">
         <div id="topBar">
-            <div class="flags">Flags: <span id="flags">0</span></div>
-            <div class="score">Score: <span id="scoreboard">0</span></div>
+            <div class="left-container">
+                <div class="icon-container flags">
+                    <i class="fas fa-flag"></i>Flags: <span id="flags">0</span>
+                </div>
+                <div class="icon-container score">
+                    <i class="fas fa-star"></i>Score: <span id="scoreboard">0</span>
+                </div>
+            </div>
             <div class="status" id="gameStatus"></div>
-            <button id="restart" class="btn-restart">Restart</button>
+            <div class="button-container">
+                <button id="restart">Restart</button>
+                <button id="difficultyButton">Select Difficulty</button>
+            </div>
         </div>
 
         <div id="gameBoard" class="gameboard"></div>
-
-        <!-- Difficulty button -->
-        <button id="difficultyButton">Select Difficulty</button>
 
         <!-- Difficulty selection pop-up -->
         <div id="difficultyPopup">

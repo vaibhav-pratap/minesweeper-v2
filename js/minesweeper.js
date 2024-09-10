@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     let boardSize = 6;  // Default 6x6 grid (Beginner)
-    let cellSize = 40;  // Base size for each cell
-    const mineCount = 10; // Default number of mines
     let gameBoard = [];
     let mineLocations = [];
     let flagCount = 0;
@@ -32,17 +30,24 @@ document.addEventListener('DOMContentLoaded', () => {
         flagsElement.textContent = `0`;
         scoreElement.textContent = `0`;  // Reset scoreboard
 
-        // Adjust the grid size dynamically based on the selected difficulty
-        const containerSize = boardSize * cellSize;
-        gameBoardElement.style.width = `${containerSize}px`;
-        gameBoardElement.style.height = `${containerSize}px`;
-        gameBoardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
-        gameBoardElement.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`;
+        adjustGridSize();  // Adjust grid size dynamically
         gameBoardElement.innerHTML = ''; // Clear any existing cells
 
         generateBoard(); // Create an empty game board
         placeMines();    // Randomly place mines
         renderBoard();   // Render the game board
+    }
+
+    // Adjust grid size based on board size and difficulty
+    function adjustGridSize() {
+        const cellSize = boardSize > 10 ? 'small' : boardSize > 8 ? 'medium' : 'large';
+        const containerSize = boardSize * (cellSize === 'small' ? 25 : cellSize === 'medium' ? 40 : 50);
+
+        gameBoardElement.style.width = `${containerSize}px`;
+        gameBoardElement.style.height = `${containerSize}px`;
+
+        gameBoardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
+        gameBoardElement.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`;
     }
 
     // Generate an empty board with default values
@@ -97,12 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let col = 0; col < boardSize; col++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
-                
-                // Apply the .small class to cells for Pro and Legend difficulties
-                if (boardSize >= 12) {
-                    cell.classList.add('small');
-                }
-
+                cell.classList.add(boardSize > 10 ? 'small' : boardSize > 8 ? 'medium' : 'large');  // Apply the appropriate cell size class
                 cell.dataset.row = row;
                 cell.dataset.col = col;
                 cell.addEventListener('click', () => revealCell(row, col));   // Left-click to reveal
