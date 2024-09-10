@@ -45,17 +45,15 @@ body {
 
 #gameBoard {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
     gap: 8px;
-    width: 320px;
-    height: 320px;
     margin-top: 80px; /* Space for the top bar */
+    justify-content: center;
 }
 
+/* Cell size for Beginner, Noob, and Expert levels */
 .cell {
-    width: 100%;
-    height: 100%;
+    width: 40px; /* Default cell size */
+    height: 40px;
     background-color: #333;
     border: 2px solid #555;
     display: flex;
@@ -64,6 +62,12 @@ body {
     font-size: 16px;
     color: white;
     transition: background-color 0.3s ease;
+}
+
+/* Cell size for Pro (12x12) and Legend (16x16) */
+.cell.small {
+    width: 30px;  /* Smaller cell size for higher difficulty levels */
+    height: 30px;
 }
 
 .cell:hover {
@@ -78,7 +82,7 @@ body {
 }
 
 .cell.mine i {
-    font-size: 24px;
+    font-size: 20px; /* Adjust bomb icon size for smaller cells */
     color: red;
     animation: mine-animation 0.4s ease-in-out;
 }
@@ -92,34 +96,64 @@ body {
     display: none;
 }
 
-/* Gradient and animation for Restart button */
-.btn-restart {
-    background: linear-gradient(90deg, #ff6f61, #ffeb3b);
-    border: none;
-    color: #121212;
+#difficultyButton {
+    margin-top: 20px;
     padding: 10px 20px;
+    background-color: #ffeb3b;
+    border: none;
     font-size: 18px;
+    color: #121212;
     cursor: pointer;
-    transition: all 0.4s ease;
     border-radius: 4px;
+    transition: transform 0.3s ease;
 }
 
-.btn-restart:hover {
-    background: linear-gradient(90deg, #ffeb3b, #ff6f61);
+#difficultyButton:hover {
     transform: scale(1.1);
 }
 
-/* Pop animation for score */
-@keyframes pop {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-    }
+/* Difficulty selection pop-up */
+#difficultyPopup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#difficultyPopup .popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+
+.popup-content h2 {
+    margin-bottom: 20px;
+    color: #121212;
+}
+
+.popup-content button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #ffeb3b;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.popup-content button:hover {
+    background-color: #ff6f61;
+    color: white;
 }
 
 /* Animations for revealing */

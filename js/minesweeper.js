@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const boardSize = 8;  // 8x8 grid
-    const mineCount = 10; // Number of mines
+    let boardSize = 6;  // Default 6x6 grid (Beginner)
+    let cellSize = 40;  // Base size for each cell
+    const mineCount = 10; // Default number of mines
     let gameBoard = [];
     let mineLocations = [];
     let flagCount = 0;
@@ -12,7 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const restartButton = document.getElementById('restart');
     const flagsElement = document.getElementById('flags');
     const scoreElement = document.getElementById('scoreboard');
-    const statusElement = document.getElementById('gameStatus');  // Game Over status
+    const statusElement = document.getElementById('gameStatus');
+    const difficultyButton = document.getElementById('difficultyButton');
+    const difficultyPopup = document.getElementById('difficultyPopup');
+    const difficultyOptions = document.querySelectorAll('.difficulty-option');
 
     // Start the game on load
     restartButton.addEventListener('click', startGame);
@@ -28,7 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
         flagsElement.textContent = `0`;
         scoreElement.textContent = `0`;  // Reset scoreboard
 
-        // Set the grid layout to be a perfect square
+        // Adjust the grid size dynamically based on the selected difficulty
+        const containerSize = boardSize * cellSize;
+        gameBoardElement.style.width = `${containerSize}px`;
+        gameBoardElement.style.height = `${containerSize}px`;
         gameBoardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
         gameBoardElement.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`;
         gameBoardElement.innerHTML = ''; // Clear any existing cells
@@ -51,7 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Place mines randomly on the board
     function placeMines() {
         let minesPlaced = 0;
-        while (minesPlaced < mineCount) {
+        const totalMines = Math.floor(boardSize * boardSize * 0.15); // Adjust the mine count based on grid size
+        while (minesPlaced < totalMines) {
             const row = Math.floor(Math.random() * boardSize);
             const col = Math.floor(Math.random() * boardSize);
             if (!gameBoard[row][col].mine) {
@@ -89,6 +97,12 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let col = 0; col < boardSize; col++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
+                
+                // Apply the .small class to cells for Pro and Legend difficulties
+                if (boardSize >= 12) {
+                    cell.classList.add('small');
+                }
+
                 cell.dataset.row = row;
                 cell.dataset.col = col;
                 cell.addEventListener('click', () => revealCell(row, col));   // Left-click to reveal
@@ -138,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Check for win condition: If all non-mine cells are revealed
-        if (revealedCount === boardSize * boardSize - mineCount) {
+        if (revealedCount === boardSize * boardSize - mineLocations.length) {
             statusElement.textContent = 'You win!'; // Update win status
             gameOver = true;  // Set the game over state
             revealAll();      // Reveal all cells
@@ -173,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             flagCount--;
             cellElement.innerHTML = ''; // Remove the flag icon
             cellElement.classList.remove('flag');
-        } else if (flagCount < mineCount) {
+        } else if (flagCount < mineLocations.length) {
             // Flag the cell: Add FontAwesome flag icon
             cellData.flag = true;
             flagCount++;
@@ -208,6 +222,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    // Show difficulty pop-up
+    difficultyButton.addEventListener('click', () => {
+        difficultyPopup.style.display = 'flex';
+    });
+
+    // Handle difficulty selection
+    difficultyOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+            boardSize = parseInt(e.target.getAttribute('data-difficulty')); // Set board size based on selected difficulty
+            difficultyPopup.style.display = 'none'; // Hide the pop-up
+            startGame(); // Restart the game with the new difficulty
+        });
+    });
 
     // Start the game for the first time
     startGame();

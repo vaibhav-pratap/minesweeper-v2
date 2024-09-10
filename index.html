@@ -13,11 +13,26 @@
         <div id="topBar">
             <div class="flags">Flags: <span id="flags">0</span></div>
             <div class="score">Score: <span id="scoreboard">0</span></div>
-            <div class="status" id="gameStatus"></div> <!-- Status will display Game Over -->
+            <div class="status" id="gameStatus"></div>
             <button id="restart" class="btn-restart">Restart</button>
         </div>
 
         <div id="gameBoard" class="gameboard"></div>
+
+        <!-- Difficulty button -->
+        <button id="difficultyButton">Select Difficulty</button>
+
+        <!-- Difficulty selection pop-up -->
+        <div id="difficultyPopup">
+            <div class="popup-content">
+                <h2>Select Difficulty</h2>
+                <button class="difficulty-option" data-difficulty="6">Beginner</button>
+                <button class="difficulty-option" data-difficulty="8">Noob</button>
+                <button class="difficulty-option" data-difficulty="10">Expert</button>
+                <button class="difficulty-option" data-difficulty="12">Pro</button>
+                <button class="difficulty-option" data-difficulty="16">Legend</button>
+            </div>
+        </div>
     </div>
 
     <script src="js/minesweeper.js"></script>
