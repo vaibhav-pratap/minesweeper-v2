@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let mineLocations = [];
     let flagCount = 0;
     let revealedCount = 0;
+    let gameOver = false; // Track whether the game is over
 
     const gameBoardElement = document.getElementById('gameBoard');
     const restartButton = document.getElementById('restart');
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mineLocations = [];
         flagCount = 0;
         revealedCount = 0;
+        gameOver = false;  // Reset the game state
         messageElement.textContent = '';
         flagsElement.textContent = `Flags: 0`;
 
@@ -97,6 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Reveal a cell, checking for mines or neighbors
     function revealCell(row, col) {
+        if (gameOver) return; // Prevent further interaction after the game is over
+
         const cellData = gameBoard[row][col];
         const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
 
@@ -108,11 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cellElement.classList.add('revealed');
 
         if (cellData.mine) {
-            // Game over if mine is revealed: Show bomb icon
+            // Game over if mine is revealed: Show bomb icon and reveal all
             cellElement.innerHTML = '<i class="fas fa-bomb"></i>'; // Display the bomb icon
             cellElement.classList.add('mine');
             messageElement.textContent = 'Game Over! You hit a mine!';
-            revealMines();
+            gameOver = true;  // Set the game over state
+            revealAll();      // Reveal all mines and numbers
             return;
         }
 
@@ -124,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (revealedCount === boardSize * boardSize - mineCount) {
             messageElement.textContent = 'You win!';
+            gameOver = true;  // Set the game over state
         }
     }
 
@@ -142,37 +148,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Toggle flag on right-click and dynamically add/remove FontAwesome flag icon
     function toggleFlag(row, col) {
+        if (gameOver) return; // Prevent flagging after the game is over
+
         const cellData = gameBoard[row][col];
         const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
 
-        if (cellData.revealed) return; // Don't flag revealed cells
+                // Don't flag revealed cells
+                if (cellData.revealed) return;
 
-        if (cellData.flag) {
-            // Unflag the cell: Remove flag icon
-            cellData.flag = false;
-            flagCount--;
-            cellElement.innerHTML = ''; // Remove the flag icon
-            cellElement.classList.remove('flag');
-        } else if (flagCount < mineCount) {
-            // Flag the cell: Add FontAwesome flag icon
-            cellData.flag = true;
-            flagCount++;
-            cellElement.innerHTML = '<i class="fas fa-flag"></i>'; // Add the flag icon
-            cellElement.classList.add('flag');
-        }
-
-        flagsElement.textContent = `Flags: ${flagCount}`;
-    }
-
-    // Reveal all mines when game is over
-    function revealMines() {
-        mineLocations.forEach(({ row, col }) => {
-            const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
-            cellElement.innerHTML = '<i class="fas fa-bomb"></i>'; // Display the bomb icon
-            cellElement.classList.add('mine');
+                if (cellData.flag) {
+                    // Unflag the cell: Remove flag icon
+                    cellData.flag = false;
+                    flagCount--;
+                    cellElement.innerHTML = ''; // Remove the flag icon
+                    cellElement.classList.remove('flag');
+                } else if (flagCount < mineCount) {
+                    // Flag the cell: Add FontAwesome flag icon
+                    cellData.flag = true;
+                    flagCount++;
+                    cellElement.innerHTML = '<i class="fas fa-flag"></i>'; // Add the flag icon
+                    cellElement.classList.add('flag');
+                }
+        
+                flagsElement.textContent = `Flags: ${flagCount}`;
+            }
+        
+            // Reveal all cells (both numbers and mines) when the game is over
+            function revealAll() {
+                for (let row = 0; row < boardSize; row++) {
+                    for (let col = 0; col < boardSize; col++) {
+                        const cellData = gameBoard[row][col];
+                        const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        
+                        if (!cellData.revealed) {
+                            if (cellData.mine) {
+                                // Reveal all mines
+                                cellElement.innerHTML = '<i class="fas fa-bomb"></i>';
+                                cellElement.classList.add('mine');
+                            } else if (cellData.neighbors > 0) {
+                                // Reveal all numbers
+                                cellElement.textContent = cellData.neighbors;
+                                cellElement.classList.add('revealed');
+                            } else {
+                                // Reveal empty cells
+                                cellElement.classList.add('revealed');
+                            }
+                        }
+                    }
+                }
+            }
+        
+            // Reveal all mines when the game is over
+            function revealMines() {
+                mineLocations.forEach(({ row, col }) => {
+                    const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                    cellElement.innerHTML = '<i class="fas fa-bomb"></i>'; // Display the bomb icon
+                    cellElement.classList.add('mine');
+                });
+            }
+        
+            // Start the game for the first time
+            startGame();
         });
-    }
-
-    // Start the game for the first time
-    startGame();
-});
+        
