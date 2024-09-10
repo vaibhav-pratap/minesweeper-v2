@@ -1,0 +1,67 @@
+body {
+    background-color: #121212;
+    color: white;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#gameBoard {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);   /* Create an 8x8 grid */
+    grid-template-rows: repeat(8, 1fr);      /* Ensure equal number of rows */
+    gap: 5px;
+    width: 240px;                            /* Set width for the grid */
+    height: 240px;                           /* Set height equal to width for a square */
+    margin: 20px auto;
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+    border: 2px solid #555;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.cell:hover {
+    background-color: #555;
+}
+
+.cell.revealed {
+    background-color: #666;
+    color: #ffffff;
+    cursor: default;
+}
+
+.cell.mine {
+    background-color: #d9534f;
+}
+
+.cell.flag {
+    color: #ffeb3b;
+}
+
+.hidden {
+    display: none;
+}
+
+.btn-outline-light {
+    border-color: #ffeb3b;
+    color: #ffeb3b;
+}
+
+.btn-outline-light:hover {
+    background-color: #ffeb3b;
+    color: #121212;
+}
