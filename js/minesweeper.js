@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const difficultyPopup = document.getElementById('difficultyPopup');
     const difficultyOptions = document.querySelectorAll('.difficulty-option');
 
+    const mineSound = document.getElementById('mineSound');  // Mine click sound
+    const winSound = document.getElementById('winSound');    // Win sound
+
+
     // Start the game on load
     restartButton.addEventListener('click', startGame);
 
@@ -36,6 +40,41 @@ document.addEventListener('DOMContentLoaded', () => {
         generateBoard(); // Create an empty game board
         placeMines();    // Randomly place mines
         renderBoard();   // Render the game board
+    }
+
+    // Play sound when mine is clicked
+    function playMineSound() {
+        mineSound.play();
+    }
+
+    // Play sound and show sparkle effect when the game is won
+    function showWinningEffect() {
+        winSound.play();
+        particlesJS('particles-js', {  // Win sparkle effect
+            particles: {
+                number: {
+                    value: 150
+                },
+                color: {
+                    value: '#ffeb3b'
+                },
+                shape: {
+                    type: 'star'
+                },
+                size: {
+                    value: 5
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    }
+                }
+            }
+        });
     }
 
     // Adjust grid size based on board size and difficulty
@@ -134,6 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cellElement.innerHTML = '<i class="fas fa-bomb"></i>'; // Display the bomb icon
             cellElement.classList.add('mine');
             statusElement.textContent = 'Game Over!'; // Update Game Over status
+            playMineSound();  // Play mine sound
             gameOver = true;  // Set the game over state
             revealAll();      // Reveal all mines and numbers
             return;
@@ -155,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (revealedCount === boardSize * boardSize - mineLocations.length) {
             statusElement.textContent = 'You win!'; // Update win status
             gameOver = true;  // Set the game over state
+            showWinningEffect();  // Play winning sparkle and sound
             revealAll();      // Reveal all cells
         }
     }
