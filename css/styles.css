@@ -138,6 +138,27 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    #topBar {
+        flex-direction: column;
+        padding: 5px;
+        justify-content: center;
+    }
+
+    #topBar .icon-container {
+        font-size: 14px;
+    }
+
+    #topBar .button-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    #topBar .status {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+
     #gameBoard {
         margin-top: 60px;
         gap: 3px;
@@ -156,10 +177,6 @@ body {
     .cell.large {
         width: 40px;
         height: 40px;
-    }
-
-    #topBar .icon-container {
-        font-size: 14px;
     }
 }
 
