@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const difficultyOptions = document.querySelectorAll('.difficulty-option');
 
     const mineSound = document.getElementById('mineSound');  // Mine click sound
+    const clickSound = document.getElementById('clickSound');  // Default click sound
     const winSound = document.getElementById('winSound');    // Win sound
-
 
     // Start the game on load
     restartButton.addEventListener('click', startGame);
@@ -40,6 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
         generateBoard(); // Create an empty game board
         placeMines();    // Randomly place mines
         renderBoard();   // Render the game board
+    }
+
+    // Play sound when a normal cell is clicked
+    function playClickSound() {
+        clickSound.play();
     }
 
     // Play sound when mine is clicked
@@ -178,6 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
             revealAll();      // Reveal all mines and numbers
             return;
         }
+
+        // Play default click sound
+        playClickSound();
 
         // Update score for revealed cells (non-mine)
         score++;
